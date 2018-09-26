@@ -46,6 +46,8 @@ kubectl create -f <dir>
 
 #查看pods/rc/service 列表
 kubectl get nodes，pods，rc，service，deployment
+#通过命名空间筛选
+kubectl get pods -n namespace
 #输出更详细的信息，包括 pod ip 和所在node ip
 kubectl get pods -o wide
 #详细yaml配置
@@ -187,16 +189,15 @@ spec:
         - containerPort: 80
           name: web
         volumeMounts:
-        - name: storage
-          mountPath: /data
-  volumeClaimTemplates:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:  # 自动创建pvc，进而自动创建pv
   - metadata:
-      name: storage
-      annotations:
-        volume.beta.kubernetes.io/storage-class: cbs
+      name: www
     spec:
       accessModes: [ "ReadWriteOnce" ]
+      storageClassName: cloud-premium
       resources:
         requests:
-          storage: 20Gi
+          storage: 10Gi
 ```
